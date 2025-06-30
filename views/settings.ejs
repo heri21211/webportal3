@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .card {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px 0 rgba(44, 62, 80, 0.12);
+    background: linear-gradient(120deg, #4a90e2 0%, #5f2c82 100%);
+    color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 20px;
+}
+.card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 8px 40px 0 rgba(44, 62, 80, 0.18);
+}
+        .form-check {
+            margin-bottom: 15px;
+        }
+        .alert.alert-danger {
+            margin-top: 20px;
+            border: none;
+            background: linear-gradient(90deg, #e52d27 0%, #b31217 100%);
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(229,45,39,0.12);
+        }
+        .gateway-settings {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .gateway-settings.inactive {
+            opacity: 0.6;
+        }
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 8px rgba(76,110,245,0.15));
+        }
+        .navbar-logo:hover {
+            transform: scale(1.05);
+        }
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .navbar {
+    background: linear-gradient(90deg, #4a90e2 0%, #6a11cb 100%);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    border-radius: 0 0 24px 24px;
+}
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+        .navbar-nav .nav-link:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+        .dark-mode .navbar-logo {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="navbar-brand d-flex align-items-center">
+                <img src="/icons/logo.png" alt="ALIJAYA-NET" class="navbar-logo me-2">
+                ONT Monitoring
+            </span>
+            <div>
+                <ul class="navbar-nav flex-row">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4"><i class="fas fa-cog me-2"></i>Pengaturan Sistem</h2>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        <% } %>
+        
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="alert alert-success">
+                <%= success %>
+            </div>
+        <% } %>
+
+        <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="otp-tab" data-bs-toggle="tab" data-bs-target="#otp" type="button" role="tab" aria-controls="otp" aria-selected="true">
+                    <i class="fas fa-key me-2"></i>Pengaturan OTP
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp" type="button" role="tab" aria-controls="whatsapp" aria-selected="false">
+                    <i class="fab fa-whatsapp me-2"></i>WhatsApp Gateway
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="mikrotik-tab" data-bs-toggle="tab" data-bs-target="#mikrotik" type="button" role="tab" aria-controls="mikrotik" aria-selected="false">
+                    <i class="fas fa-network-wired me-2"></i>Mikrotik API
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="server-tab" data-bs-toggle="tab" data-bs-target="#server" type="button" role="tab" aria-controls="server" aria-selected="false">
+                    <i class="fas fa-server me-2"></i>Konfigurasi Server
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="logo-tab" data-bs-toggle="tab" data-bs-target="#logo" type="button" role="tab" aria-controls="logo" aria-selected="false">
+                    <i class="fas fa-image me-2"></i>Logo Settings
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="settingsTabsContent">
+            <!-- Tab OTP Settings -->
+            <div class="tab-pane fade show active" id="otp" role="tabpanel" aria-labelledby="otp-tab">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-key me-2"></i>Pengaturan OTP</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="otpSettingsForm">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="otpEnabled" <%= settings.otpEnabled ? 'checked' : '' %>>
+                                <label class="form-check-label" for="otpEnabled">Aktifkan Verifikasi OTP</label>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="otpExpiry" class="form-label">Masa Berlaku OTP (detik)</label>
+                                    <input type="number" class="form-control" id="otpExpiry" value="<%= settings.otpExpiry || 300 %>" min="60" max="3600">
+                                    <div class="form-text">Minimal 60 detik, maksimal 3600 detik (1 jam)</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="otpLength" class="form-label">Panjang OTP</label>
+                                    <select class="form-select" id="otpLength">
+                                        <option value="4" <%= settings.otpLength === 4 ? 'selected' : '' %>>4 digit</option>
+                                        <option value="6" <%= settings.otpLength === 6 ? 'selected' : '' %>>6 digit</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="otpMessage" class="form-label">Template Pesan OTP</label>
+                                <textarea class="form-control" id="otpMessage" rows="3"><%= settings.otpMessage || "Kode OTP Anda untuk login WebPortal: {{otp}}. Kode ini berlaku selama {{expiry}} menit." %></textarea>
+                                <div class="form-text">Gunakan {{otp}} untuk menempatkan kode OTP dan {{expiry}} untuk masa berlaku (dalam menit)</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="adminWhatsapp" class="form-label">Nomor WhatsApp Admin</label>
+                                <input type="text" class="form-control" id="adminWhatsapp" value="<%= settings.adminWhatsapp || '' %>" placeholder="628xxxxxxxxxx">
+                                <div class="form-text">Nomor WhatsApp admin untuk menerima pesan test (format: 628xxxxxxxxxx)</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Simpan Pengaturan OTP
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab WhatsApp Gateway Settings -->
+            <div class="tab-pane fade" id="whatsapp" role="tabpanel" aria-labelledby="whatsapp-tab">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fab fa-whatsapp me-2"></i>WhatsApp Gateway</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="gatewaySettingsForm">
+                            <div class="mb-3">
+                                <label class="form-label">ID Group WhatsApp (untuk notifikasi laporan gangguan)</label>
+                                <input type="text" class="form-control" id="groupWhatsapp" name="groupWhatsapp" placeholder="Contoh: 120363031495796203@g.us" value="<%= settings.groupWhatsapp || '' %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Pilih WhatsApp Gateway</label>
+                                <div class="form-check">
+                                    <input class="form-check-input gateway-radio" type="radio" name="whatsappGateway" id="fonnte" value="fonnte" <%= settings.whatsappGateway === 'fonnte' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="fonnte">
+                                        FONNTE
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input gateway-radio" type="radio" name="whatsappGateway" id="wablas" value="wablas" <%= settings.whatsappGateway === 'wablas' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="wablas">
+                                        WABLAS
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input gateway-radio" type="radio" name="whatsappGateway" id="mpwa" value="mpwa" <%= settings.whatsappGateway === 'mpwa' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="mpwa">
+                                        MPWA
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- FONNTE Settings -->
+                            <div id="fonnte-settings" class="gateway-settings <%= settings.whatsappGateway !== 'fonnte' ? 'inactive' : '' %>">
+                                <h6>Pengaturan FONNTE</h6>
+                                <div class="mb-3">
+                                    <label for="fonnte-token" class="form-label">API Token</label>
+                                    <input type="text" class="form-control" id="fonnte-token" value="<%= settings.gateways?.fonnte?.token || '' %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fonnte-server-url" class="form-label">Server URL</label>
+                                    <input type="text" class="form-control" id="fonnte-server-url" value="<%= settings.gateways?.fonnte?.serverUrl || 'https://api.fonnte.com/send' %>" placeholder="https://api.fonnte.com/send">
+                                    <div class="form-text">URL API untuk mengirim pesan (default: https://api.fonnte.com/send)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fonnte-sender" class="form-label">Nomor Pengirim (opsional)</label>
+                                    <input type="text" class="form-control" id="fonnte-sender" value="<%= settings.gateways?.fonnte?.sender || '' %>" placeholder="6281234567890">
+                                    <div class="form-text">Nomor pengirim jika menggunakan multi-device (kosongkan jika menggunakan device tunggal)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Webhook URL</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="<%= webhookBaseUrl %>/webhook/fonnte" id="fonnte-webhook-url" readonly>
+                                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('fonnte-webhook-url')"><i class="fas fa-copy"></i></button>
+                                    </div>
+                                    <div class="form-text">Salin URL ini dan masukkan ke pengaturan webhook di dashboard Fonnte</div>
+                                </div>
+                                <div class="form-text">Dapatkan token di <a href="https://fonnte.com" target="_blank">fonnte.com</a></div>
+                            </div>
+                            
+                            <!-- WABLAS Settings -->
+                            <div id="wablas-settings" class="gateway-settings <%= settings.whatsappGateway !== 'wablas' ? 'inactive' : '' %>">
+                                <h6>Pengaturan WABLAS</h6>
+                                <div class="mb-3">
+                                    <label for="wablas-token" class="form-label">API Token</label>
+                                    <input type="text" class="form-control" id="wablas-token" value="<%= settings.gateways?.wablas?.token || '' %>">
+                                    <div class="form-text">Dapatkan token di dashboard Wablas</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wablas-server" class="form-label">Server URL</label>
+                                    <input type="text" class="form-control" id="wablas-server" value="<%= settings.gateways?.wablas?.serverUrl || 'https://solo.wablas.com/api' %>">
+                                    <div class="form-text">URL server Wablas (contoh: https://solo.wablas.com/api)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Webhook URL</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="<%= webhookBaseUrl %>/webhook/wablas" id="wablas-webhook-url" readonly>
+                                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('wablas-webhook-url')"><i class="fas fa-copy"></i></button>
+                                    </div>
+                                    <div class="form-text">Salin URL ini dan masukkan ke pengaturan webhook di dashboard Wablas</div>
+                                </div>
+                            </div>
+                            
+                            <!-- MPWA Settings -->
+                            <div id="mpwa-settings" class="gateway-settings <%= settings.whatsappGateway !== 'mpwa' ? 'inactive' : '' %>">
+                                <h6>Pengaturan MPWA</h6>
+                                <div class="mb-3">
+                                    <label for="mpwa-token" class="form-label">API Token</label>
+                                    <input type="text" class="form-control" id="mpwa-token" value="<%= settings.gateways?.mpwa?.token || '' %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="mpwa-server" class="form-label">Server URL</label>
+                                    <input type="text" class="form-control" id="mpwa-server" 
+                                           value="<%= settings.gateways?.mpwa?.serverUrl || 'https://wa.parabolaku.id/send-message' %>"
+                                           placeholder="https://wa.parabolaku.id/send-message">
+                                    <div class="form-text">URL endpoint untuk mengirim pesan WhatsApp</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="mpwa-sender" class="form-label">Sender ID</label>
+                                    <input type="text" class="form-control" id="mpwa-sender" value="<%= settings.gateways?.mpwa?.sender || '' %>">
+                                    <div class="form-text">ID pengirim pesan (jika diperlukan)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Webhook URL</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="<%= webhookBaseUrl %>/webhook/mpwa" id="mpwa-webhook-url" readonly>
+                                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('mpwa-webhook-url')"><i class="fas fa-copy"></i></button>
+                                    </div>
+                                    <div class="form-text">Salin URL ini dan masukkan ke pengaturan webhook di dashboard MPWA</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="mpwa-footer" class="form-label">Footer Pesan</label>
+                                    <input type="text" class="form-control" id="mpwa-footer" 
+                                           value="<%= settings.gateways?.mpwa?.footer || 'ALIJAYA-NET' %>"
+                                           placeholder="ALIJAYA-NET">
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="fas fa-save me-2"></i>Simpan Pengaturan Gateway
+                                </button>
+                                <button type="button" id="testGateway" class="btn btn-success">
+                                    <i class="fas fa-paper-plane me-2"></i>Test Gateway
+                                </button>
+                                <button type="button" id="testGroup" class="btn btn-warning">
+                                    <i class="fas fa-users me-2"></i>Test Kirim ke Group
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Mikrotik API Settings -->
+            <div class="tab-pane fade" id="mikrotik" role="tabpanel" aria-labelledby="mikrotik-tab">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-network-wired me-2"></i>Pengaturan Mikrotik API</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="mikrotikSettingsForm">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="mikrotikEnabled" <%= settings.mikrotik?.enabled ? 'checked' : '' %>>
+                                <label class="form-check-label" for="mikrotikEnabled">Aktifkan Mikrotik API</label>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="mikrotikHost" class="form-label">Host/IP Address</label>
+                                    <input type="text" class="form-control" id="mikrotikHost" value="<%= settings.mikrotik?.host || '192.168.8.1' %>" placeholder="192.168.8.1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mikrotikPort" class="form-label">Port</label>
+                                    <input type="number" class="form-control" id="mikrotikPort" value="<%= settings.mikrotik?.port || 8728 %>" placeholder="8728">
+                                    <div class="form-text">Default: 8728 (API), 8729 (API-SSL)</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="mikrotikUsername" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="mikrotikUsername" value="<%= settings.mikrotik?.username || 'admin' %>" placeholder="admin">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mikrotikPassword" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="mikrotikPassword" value="<%= settings.mikrotik?.password || '' %>" placeholder="password">
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>Pengaturan ini digunakan untuk fitur manajemen Mikrotik melalui WhatsApp. Pastikan user Mikrotik memiliki hak akses yang cukup.
+                            </div>
+                            
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="fas fa-save me-2"></i>Simpan Pengaturan Mikrotik
+                                </button>
+                                <button type="button" id="testMikrotik" class="btn btn-success">
+                                    <i class="fas fa-plug me-2"></i>Test Koneksi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Server Settings -->
+            <div class="tab-pane fade" id="server" role="tabpanel" aria-labelledby="server-tab">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-server me-2"></i>Pengaturan Server</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="serverSettingsForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mb-3">GenieACS Configuration</h6>
+                                    <div class="mb-3">
+                                        <label for="genieacsUrl" class="form-label">GenieACS URL</label>
+                                        <input type="text" class="form-control" id="genieacsUrl" name="genieacsUrl" value="<%= settings?.server?.genieacsUrl || process.env.GENIEACS_URL || '' %>" required>
+                                        <div class="form-text">Format: http://ip-address:port // port API Genieacs 7557</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="genieacsUsername" class="form-label">GenieACS Username</label>
+                                        <input type="text" class="form-control" id="genieacsUsername" name="genieacsUsername" value="<%= settings?.server?.genieacsUsername || process.env.GENIEACS_USERNAME || '' %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="genieacsPassword" class="form-label">GenieACS Password</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="genieacsPassword" name="genieacsPassword" value="<%= settings?.server?.genieacsPassword || process.env.GENIEACS_PASSWORD || '' %>" required>
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="genieacsPassword">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="mb-3">Admin Credentials</h6>
+                                    <div class="mb-3">
+                                        <label for="adminUsername" class="form-label">Admin Username</label>
+                                        <input type="text" class="form-control" id="adminUsername" name="adminUsername" value="<%= settings?.server?.adminUsername || process.env.ADMIN_USERNAME || '' %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="adminPassword" class="form-label">Admin Password</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="adminPassword" name="adminPassword" value="<%= settings?.server?.adminPassword || process.env.ADMIN_PASSWORD || '' %>" required>
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="adminPassword">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <h6 class="mb-3 mt-4">Teknisi Credentials</h6>
+                                    <div class="mb-3">
+                                        <label for="teknisiUsername" class="form-label">Teknisi Username</label>
+                                        <input type="text" class="form-control" id="teknisiUsername" name="teknisiUsername" value="<%= settings?.server?.teknisiUsername || process.env.TEKNISI_USERNAME || '' %>">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="teknisiPassword" class="form-label">Teknisi Password</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="teknisiPassword" name="teknisiPassword" value="<%= settings?.server?.teknisiPassword || process.env.TEKNISI_PASSWORD || '' %>">
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="teknisiPassword">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Simpan Pengaturan Server
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Logo Settings -->
+            <div class="tab-pane fade" id="logo" role="tabpanel" aria-labelledby="logo-tab">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-image me-2"></i>Pengaturan Logo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="current-logo mb-4">
+                                    <h6>Logo Saat Ini</h6>
+                                    <img src="/icons/logo.png" alt="Current Logo" class="img-fluid mb-2" style="max-height: 100px;">
+                                    <p class="text-muted small">Format yang didukung: PNG, JPG, JPEG. Ukuran maksimal: 2MB</p>
+                                </div>
+                                
+                                <form id="logoUploadForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="logoFile" class="form-label">Upload Logo Baru</label>
+                                        <input type="file" class="form-control" id="logoFile" name="logo" accept="image/png,image/jpeg,image/jpg">
+                                        <div class="form-text">Disarankan rasio aspek 3:1, background transparan (PNG)</div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-upload me-2"></i>Upload Logo
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="logo-preview mt-4">
+                                    <h6>Preview</h6>
+                                    <div class="preview-navbar p-3 rounded" style="background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);">
+                                        <img id="logoPreview" src="/icons/logo.png" alt="Logo Preview" style="height: 40px; filter: brightness(0) invert(1);">
+                                    </div>
+                                    <p class="text-muted small mt-2">Preview tampilan di navbar</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Fungsi untuk menyalin teks ke clipboard
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            
+            // Tampilkan toast notifikasi
+            showToast('success', 'URL berhasil disalin ke clipboard!');
+        }
+        
+        $(document).ready(function() {
+    $('#testGroup').on('click', function() {
+        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Testing...');
+        $.ajax({
+            url: '/admin/test-group',
+            type: 'POST',
+            success: function(response) {
+                alert(response.message || 'Pesan test berhasil dikirim ke group WhatsApp.');
+            },
+            error: function(xhr) {
+                alert('Gagal kirim pesan test ke group: ' + (xhr.responseJSON?.message || xhr.statusText));
+            },
+            complete: function() {
+                $('#testGroup').prop('disabled', false).html('<i class="fas fa-users me-2"></i>Test Kirim ke Group');
+            }
+        });
+    });
+            // Toggle gateway settings visibility
+            $('.gateway-radio').change(function() {
+                const selectedGateway = $('input[name="whatsappGateway"]:checked').val();
+                $('.gateway-settings').addClass('inactive');
+                $(`#${selectedGateway}-settings`).removeClass('inactive');
+            });
+            
+            // Handle OTP Settings Form Submit
+            $('#otpSettingsForm').submit(function(e) {
+                e.preventDefault();
+                
+                const otpEnabled = $('#otpEnabled').is(':checked');
+                const otpExpiry = parseInt($('#otpExpiry').val());
+                const otpLength = parseInt($('#otpLength').val());
+                const otpMessage = $('#otpMessage').val();
+                const adminWhatsapp = $('#adminWhatsapp').val();
+                
+                // Validasi
+                if (otpExpiry < 60 || otpExpiry > 3600) {
+                    alert('Masa berlaku OTP harus antara 60-3600 detik');
+                    return;
+                }
+                
+                if (![4, 6].includes(otpLength)) {
+                    alert('Panjang OTP harus 4 atau 6 digit');
+                    return;
+                }
+                
+                // Kirim data ke server
+                $.ajax({
+                    url: '/admin/save-otp-settings',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        otpEnabled,
+                        otpExpiry,
+                        otpLength,
+                        otpMessage,
+                        adminWhatsapp
+                    }),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Pengaturan OTP berhasil disimpan');
+                        } else {
+                            alert('Gagal menyimpan pengaturan: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + (xhr.responseJSON?.message || xhr.statusText));
+                    }
+                });
+            });
+            
+            // Handle Gateway Settings Form Submit
+            $('#gatewaySettingsForm').submit(function(e) {
+                e.preventDefault();
+                
+                const whatsappGateway = $('input[name="whatsappGateway"]:checked').val();
+                const groupWhatsapp = $('#groupWhatsapp').val();
+                
+                // Siapkan data gateway
+                const gateways = {
+                    fonnte: {
+                        token: $('#fonnte-token').val(),
+                        serverUrl: $('#fonnte-server-url').val(),
+                        sender: $('#fonnte-sender').val(),
+                        enabled: whatsappGateway === 'fonnte'
+                    },
+                    wablas: {
+                        token: $('#wablas-token').val(),
+                        serverUrl: $('#wablas-server').val(),
+                        enabled: whatsappGateway === 'wablas'
+                    },
+                    mpwa: {
+                        token: $('#mpwa-token').val(),
+                        serverUrl: $('#mpwa-server').val(),
+                        sender: $('#mpwa-sender').val(),
+                        footer: $('#mpwa-footer').val(),
+                        enabled: whatsappGateway === 'mpwa'
+                    }
+                };
+                
+                // Kirim data ke server
+                $.ajax({
+                    url: '/admin/save-gateway-settings',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        whatsappGateway,
+                        groupWhatsapp,
+                        gateways
+                    }),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Pengaturan gateway berhasil disimpan');
+                        } else {
+                            alert('Gagal menyimpan pengaturan: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + (xhr.responseJSON?.message || xhr.statusText));
+                    }
+                });
+            });
+            
+            // Test Gateway
+            $('#testGateway').click(function() {
+                if (!confirm('Apakah Anda yakin ingin mengirim pesan test ke nomor admin?')) {
+                    return;
+                }
+                
+                $.ajax({
+                    url: '/admin/test-gateway',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({}),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Test berhasil! Pesan telah dikirim ke nomor admin.');
+                        } else {
+                            alert('Test gagal: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + (xhr.responseJSON?.message || xhr.statusText));
+                    }
+                });
+            });
+            
+            // Menghandle toggle password visibility
+            $('.toggle-password').click(function() {
+                const targetId = $(this).data('target') || $(this).parent().prev('input').attr('id');
+                const passwordInput = document.getElementById(targetId);
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+            });
+            
+            // Load server settings ketika tab server ditampilkan
+            $('#server-tab').on('shown.bs.tab', async function() {
+                try {
+                    const response = await fetch('/admin/get-server-settings');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        document.getElementById('genieacsUrl').value = data.settings.GENIEACS_URL || '';
+                        document.getElementById('genieacsUsername').value = data.settings.GENIEACS_USERNAME || '';
+                        document.getElementById('genieacsPassword').value = data.settings.GENIEACS_PASSWORD || '';
+                        document.getElementById('adminUsername').value = data.settings.ADMIN_USERNAME || '';
+                        document.getElementById('adminPassword').value = data.settings.ADMIN_PASSWORD || '';
+                    }
+                } catch (error) {
+                    console.error('Error fetching server settings:', error);
+                    showToast('error', 'Gagal memuat pengaturan server');
+                }
+            });
+
+            // Handle server settings form submission
+            document.getElementById('serverSettingsForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    genieacsUrl: document.getElementById('genieacsUrl').value,
+                    genieacsUsername: document.getElementById('genieacsUsername').value,
+                    genieacsPassword: document.getElementById('genieacsPassword').value,
+                    adminUsername: document.getElementById('adminUsername').value,
+                    adminPassword: document.getElementById('adminPassword').value,
+                    teknisiUsername: document.getElementById('teknisiUsername')?.value || '',
+                    teknisiPassword: document.getElementById('teknisiPassword')?.value || ''
+                };
+                
+                try {
+                    const response = await fetch('/admin/save-server-settings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showToast('success', 'Pengaturan server berhasil disimpan');
+                    } else {
+                        showToast('error', data.message || 'Gagal menyimpan pengaturan server');
+                    }
+                } catch (error) {
+                    console.error('Error updating server settings:', error);
+                    showToast('error', 'Terjadi kesalahan saat menyimpan pengaturan server');
+                }
+            });
+            
+            // Menghandle form pengaturan Mikrotik API
+            // Handler untuk form pengaturan server
+            $('#serverSettingsForm').submit(async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    genieacsUrl: $('#genieacsUrl').val(),
+                    genieacsUsername: $('#genieacsUsername').val(),
+                    genieacsPassword: $('#genieacsPassword').val(),
+                    adminUsername: $('#adminUsername').val(),
+                    adminPassword: $('#adminPassword').val()
+                };
+                
+                try {
+                    const response = await fetch('/admin/save-server-settings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showToast('success', 'Pengaturan server berhasil disimpan');
+                    } else {
+                        showToast('error', data.message || 'Gagal menyimpan pengaturan server');
+                    }
+                } catch (error) {
+                    console.error('Error updating server settings:', error);
+                    showToast('error', 'Terjadi kesalahan saat menyimpan pengaturan server');
+                }
+            });
+            
+            $('#mikrotikSettingsForm').submit(async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    enabled: $('#mikrotikEnabled').is(':checked'),
+                    host: $('#mikrotikHost').val(),
+                    port: $('#mikrotikPort').val(),
+                    username: $('#mikrotikUsername').val(),
+                    password: $('#mikrotikPassword').val()
+                };
+                
+                try {
+                    const response = await fetch('/admin/update-mikrotik-settings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showToast('success', 'Pengaturan Mikrotik API berhasil disimpan');
+                    } else {
+                        showToast('error', data.message || 'Gagal menyimpan pengaturan Mikrotik API');
+                    }
+                } catch (error) {
+                    console.error('Error updating Mikrotik API settings:', error);
+                    showToast('error', 'Terjadi kesalahan saat menyimpan pengaturan Mikrotik API');
+                }
+            });
+            
+            // Test koneksi Mikrotik API
+            $('#testMikrotik').click(async function() {
+                if (!confirm('Apakah Anda yakin ingin menguji koneksi ke Mikrotik?')) {
+                    return;
+                }
+                
+                const formData = {
+                    host: $('#mikrotikHost').val(),
+                    port: $('#mikrotikPort').val(),
+                    username: $('#mikrotikUsername').val(),
+                    password: $('#mikrotikPassword').val()
+                };
+                
+                try {
+                    showToast('info', 'Menguji koneksi ke Mikrotik...');
+                    
+                    const response = await fetch('/admin/test-mikrotik-connection', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showToast('success', 'Koneksi ke Mikrotik berhasil!');
+                    } else {
+                        showToast('error', data.message || 'Gagal terhubung ke Mikrotik');
+                    }
+                } catch (error) {
+                    console.error('Error testing Mikrotik connection:', error);
+                    showToast('error', 'Terjadi kesalahan saat menguji koneksi Mikrotik');
+                }
+            });
+            
+            // Fungsi untuk menampilkan toast notification
+            function showToast(type, message) {
+                const toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                toastContainer.style.zIndex = '5000';
+                
+                const toastHtml = `
+                    <div class="toast ${type === 'error' ? 'bg-danger' : 'bg-success'} text-white" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header ${type === 'error' ? 'bg-danger' : 'bg-success'} text-white">
+                            <strong class="me-auto">${type === 'error' ? 'Error' : 'Success'}</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+                
+                toastContainer.innerHTML = toastHtml;
+                document.body.appendChild(toastContainer);
+                
+                const toastElement = toastContainer.querySelector('.toast');
+                const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
+                toast.show();
+                
+                toastElement.addEventListener('hidden.bs.toast', function() {
+                    toastContainer.remove();
+                });
+            }
+
+            document.getElementById('logoFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validasi ukuran file (max 2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('Ukuran file terlalu besar. Maksimal 2MB');
+                        this.value = '';
+                        return;
+                    }
+
+                    // Preview logo
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('logoPreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('logoUploadForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData();
+                const fileInput = document.getElementById('logoFile');
+                
+                if (!fileInput.files.length) {
+                    alert('Pilih file logo terlebih dahulu');
+                    return;
+                }
+                
+                formData.append('logo', fileInput.files[0]);
+                
+                try {
+                    const response = await fetch('/admin/upload-logo', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showToast('success', 'Logo berhasil diupdate');
+                        
+                        // Update semua gambar logo di halaman dengan version baru
+                        const newVersion = data.version || Date.now();
+                        document.querySelectorAll('img[src*="logo.png"]').forEach(img => {
+                            img.src = `/icons/logo.png?v=${newVersion}`;
+                        });
+                        
+                        // Clear input file
+                        fileInput.value = '';
+                    } else {
+                        throw new Error(data.message || 'Gagal mengupload logo');
+                    }
+                } catch (error) {
+                    showToast('danger', 'Error: ' + error.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

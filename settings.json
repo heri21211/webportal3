@@ -1,0 +1,45 @@
+{
+  "otpEnabled": false,
+  "otpExpiry": 300,
+  "otpLength": 4,
+  "whatsappGateway": "mpwa",
+  "adminWhatsapp": "6281947215703",
+  "groupWhatsapp": "120363402206095157@g.us",
+  "gateways": {
+    "fonnte": {
+      "token": "wik2cbw4NaURsKqycqL6",
+      "serverUrl": "https://api.fonnte.com/send",
+      "sender": "6287820851413",
+      "enabled": false
+    },
+    "wablas": {
+      "token": "",
+      "serverUrl": "https://solo.wablas.com/api",
+      "enabled": false
+    },
+    "mpwa": {
+      "token": "0ZlIQNCa3inZRcXe7OKbpLXYtTsJ52",
+      "serverUrl": "https://api.mikrojabar.com/send-message",
+      "sender": "6285168815964",
+      "footer": "UNO-NETWORKING",
+      "enabled": true
+    }
+  },
+  "mikrotik": {
+    "host": "192.168.45.10",
+    "port": 222,
+    "username": "endun",
+    "password": "281022",
+    "enabled": true
+  },
+  "otpMessage": "Kode OTP Anda untuk login WebPortal: {{otp}}. Kode ini berlaku selama {{expiry}} menit. ALIJAYA-NET",
+  "server": {
+    "genieacsUrl": "http://103.87.66.240:7557",
+    "genieacsUsername": "admin",
+    "genieacsPassword": "admin",
+    "adminUsername": "admin",
+    "adminPassword": "unauno22",
+    "teknisiUsername": "teknisi",
+    "teknisiPassword": "teknisi"
+  }
+}

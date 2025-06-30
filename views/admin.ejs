@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4a90e2 0%, #2c3e50 100%);
+        }
+        
+        body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4a90e2 0%, #2c3e50 100%);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #f5f7fa;
+}
+        
+        .navbar {
+    background: linear-gradient(90deg, #4a90e2 0%, #6a11cb 100%);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    border-radius: 0 0 24px 24px;
+}
+
+        .card {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px 0 rgba(44, 62, 80, 0.12);
+    background: linear-gradient(120deg, #4a90e2 0%, #5f2c82 100%);
+    color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 8px 40px 0 rgba(44, 62, 80, 0.18);
+}
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .device-card {
+            margin-bottom: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .device-info {
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .device-status {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .devices-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .important-info {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .online {
+            background-color: #2ecc71;
+        }
+
+        .offline {
+            background-color: #e74c3c;
+        }
+
+        .status-online {
+            background-color: #2ecc71;
+        }
+
+        .status-offline {
+            background-color: #e74c3c;
+        }
+
+        .status-unknown {
+            background-color: #95a5a6;
+        }
+
+        .rx-power-good {
+            color: #2ecc71;
+        }
+
+        .rx-power-warning {
+            color: #f1c40f;
+        }
+
+        .rx-power-critical {
+            color: #e74c3c;
+        }
+
+        .search-box {
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filter-dropdown {
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #ddd;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem 2rem;
+            border-radius: 24px;
+            text-align: left;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        .stats-content {
+            flex: 1;
+        }
+
+        .stats-card.total {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .stats-card.online {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.2);
+        }
+
+        .stats-card.offline {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 15px 30px rgba(239, 68, 68, 0.2);
+        }
+
+        .stats-card.critical {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 15px 30px rgba(245, 158, 11, 0.2);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-icon {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            flex-shrink: 0;
+        }
+
+        .stats-card h3 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .stats-card:hover .stats-icon {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .stats-card {
+                padding: 1rem 1.5rem;
+                gap: 1rem;
+            }
+
+            .stats-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .stats-card h3 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Style untuk tombol reboot */
+        .reboot-device-btn {
+            transition: all 0.3s ease;
+        }
+        .reboot-device-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        .reboot-device-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        /* Style untuk alert */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 300px;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Style untuk form WiFi settings */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+        .input-group .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.375rem 0.75rem;
+        }
+        .input-group .btn i {
+            font-size: 0.875rem;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .info-group {
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-group label {
+            display: block;
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-group .value {
+            font-size: 0.9375rem;
+            padding: 0.25rem 0;
+        }
+        
+        /* Adjust spacing for the customer number section */
+        .info-group .btn-sm {
+            margin-top: 0;  /* Align with input */
+        }
+        
+        /* Make sure the Model value aligns with input height */
+        .info-group .value {
+            min-height: calc(1.5em + 0.5rem + 2px);
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Adjust the help text spacing */
+        .text-muted {
+            font-size: 0.75rem;
+            margin-top: -0.25rem;
+        }
+        
+        h6 {
+            color: #495057;
+            font-size: 0.9375rem;
+            font-weight: 600;
+        }
+        
+        .input-group-sm > .form-control {
+            font-size: 0.875rem;
+        }
+        
+        .input-group-sm > .btn {
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .device-card {
+            margin-bottom: 1.5rem;
+        }
+        
+        .device-card .card {
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .form-control-sm {
+            height: calc(1.5em + 0.5rem + 2px);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.2rem;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.2rem;
+            height: calc(1.5em + 0.5rem + 2px);
+        }
+        
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+        
+        .info-group small {
+            display: block;
+            margin-top: 0.25rem;
+        }
+        
+        /* Update primary button color to match image */
+        .btn-primary {
+    background: linear-gradient(90deg, #4a90e2 0%, #6a11cb 100%);
+    border: none;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(76,110,245,0.18);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover, .btn-primary:focus {
+    background: linear-gradient(90deg, #6a11cb 0%, #4a90e2 100%);
+    box-shadow: 0 4px 16px rgba(76,110,245,0.28);
+    color: #fff;
+}
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        
+        /* Adjust form layouts */
+        .info-group {
+            margin-bottom: 1rem;
+        }
+        
+        /* Make all inputs same height */
+        .form-control-sm,
+        .input-group-sm > .form-control,
+        .input-group-sm > .btn {
+            height: calc(1.5em + 0.5rem + 2px);
+        }
+        
+        /* Ensure buttons align properly */
+        .col-auto {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        /* Add some spacing after forms */
+        .update-ssid-form,
+        .update-password-form {
+            margin-bottom: 1rem;
+        }
+        
+        /* Make sure all form rows have consistent spacing */
+        .row {
+            align-items: flex-start;
+        }
+
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Dark mode adjustment untuk logo */
+        .dark-mode .navbar-logo {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="navbar-brand d-flex align-items-center">
+                <img src="/icons/logo.png?v=<%= Date.now() %>" alt="ALIJAYA-NET" class="navbar-logo me-2">
+                ONT Monitoring
+            </span>
+            <div>
+                <ul class="navbar-nav flex-row">
+                    <% if (userLevel === 'admin') { %>
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="/admin/settings">
+                            <i class="fas fa-cog me-2"></i>Pengaturan
+                        </a>
+                    </li>
+                    <% } %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/logout">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <% if (error) { %>
+        <div class="alert alert-danger" role="alert">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Device Management</h4>
+            <button id="refreshAllBtn" class="btn btn-primary">
+                <i class="fas fa-sync-alt me-2"></i>Refresh All Devices
+            </button>
+        </div>
+
+        <!-- Statistics Summary -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card total">
+                    <div class="stats-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="totalDevices">0</h3>
+                        <p>Total Devices</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card online">
+                    <div class="stats-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="onlineDevices">0</h3>
+                        <p>Online</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card offline">
+                    <div class="stats-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="offlineDevices">0</h3>
+                        <p>Offline</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card critical">
+                    <div class="stats-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="criticalDevices">0</h3>
+                        <p>Critical Power</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" 
+                           id="searchInput" 
+                           class="form-control" 
+                           placeholder="Cari berdasarkan PPPoE Username atau Nomor Pelanggan...">
+                </div>
+                <div class="col-md-4">
+                    <select id="statusFilter" class="form-select">
+                        <option value="all">All Status</option>
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select id="rxPowerFilter" class="form-select">
+                        <option value="all">All RX Power</option>
+                        <option value="good">Good</option>
+                        <option value="warning">Warning</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Devices Grid -->
+        <% if (devices && devices.length > 0) { %>
+            <div class="devices-container">
+                <% devices.forEach(device => { %>
+                    <div class="card device-card">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex align-items-center">
+                                <span class="status-indicator <%= device.online ? 'online' : 'offline' %>"></span>
+                                <%= device.model %>
+                            </h5>
+                            
+                            <div class="device-info">
+                                <strong>SN:</strong> <%= device.serialNumber %>
+                            </div>
+                            <div class="device-info">
+                                <strong>PPPoE:</strong> <%= device.pppUsername %>
+                            </div>
+                            <div class="device-info">
+                                <strong>IP:</strong> <%= device.pppoeIP %>
+                            </div>
+                            <div class="device-info">
+                                <strong>RX Power:</strong> 
+                                <span class="<%= getRxPowerClass(device.rxPower) %>">
+                                    <%= device.rxPower %>
+                                </span>
+                            </div>
+                            <div class="device-info">
+                                <strong>Connected Users:</strong>
+                                <span class="ms-1">
+                                    2.4G: <%= device.userConnected2G || '0' %> users, 
+                                    5G: <%= device.userConnected5G || '0' %> users
+                                </span>
+                            </div>
+                            
+                            <!-- Form Update SSID (Single input untuk kedua band) -->
+                            <div class="mt-3">
+                                <form class="update-ssid-form" data-device-id="<%= device._id %>">
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" name="ssid" class="form-control" 
+                                               placeholder="SSID" 
+                                               value="<%= device.ssid || device.ssid2G || 'N/A' %>" 
+                                               required>
+                                        <button type="submit" class="btn btn-primary" title="Update SSID">
+                                            <i class="fas fa-wifi"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Perubahan SSID dan password berlaku untuk 2.4G dan 5G</small>
+                                </form>
+                            </div>
+
+                            <!-- Form Update Password (Single input untuk kedua band) -->
+                            <div class="mt-2">
+                                <form class="update-password-form" data-device-id="<%= device._id %>">
+                                    <div class="input-group input-group-sm">
+                                        <input type="password" name="password" class="form-control wifi-password" 
+                                               placeholder="New Password" minlength="8" required>
+                                        <button type="button" class="btn btn-outline-secondary toggle-password">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" title="Update Password">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Form Update Customer Number -->
+                            <div class="mt-2">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm" 
+                                               placeholder="Customer Number" 
+                                               data-device-id="<%= device._id %>"
+                                               value="<%= device._tags.find(tag => /^\d+$/.test(tag)) || '' %>">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary btn-sm" 
+                                                onclick="updateCustomerNumber(this)"
+                                                title="Update Tag">
+                                            <i class="fas fa-tag"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Form Update Customer Name -->
+                            <div class="mt-2">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col">
+                                         <input type="text" class="form-control form-control-sm" 
+                                                placeholder="Customer Name" 
+                                                data-device-id="<%= device._id %>"
+                                                value="<% 
+                                                    let customerName = '';
+                                                    if (device._tags && Array.isArray(device._tags)) {
+                                                        const nameTag = device._tags.find(tag => tag.startsWith('customerName:'));
+                                                        if (nameTag) {
+                                                            customerName = nameTag.split('customerName:')[1];
+                                                        }
+                                                    }
+                                                %><%= customerName %>">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary btn-sm" 
+                                                onclick="updateCustomerName(this)"
+                                                title="Update Customer Name">
+                                            <i class="fas fa-user"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="mt-2">
+                                <button class="btn btn-danger btn-sm reboot-device" 
+                                        data-device-id="<%= device._id %>"
+                                        title="Reboot Device">
+                                    <i class="fas fa-power-off"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <div class="alert alert-info" role="alert">
+                Tidak ada perangkat yang ditemukan. Harap periksa <a href="/admin/settings" class="alert-link">pengaturan GenieACS</a> untuk memastikan konfigurasi sudah benar.
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        // Helper function untuk selector :contains
+        // Karena :contains tidak tersedia secara native di JavaScript
+        document.querySelectorAll = (function(querySelectorAll) {
+            return function(selector) {
+                if (selector.includes(':contains')) {
+                    const parts = selector.split(':contains');
+                    const baseSelector = parts[0];
+                    const searchText = parts[1].replace(/[()]/g, '').trim();
+                    
+                    const elements = querySelectorAll.call(this, baseSelector);
+                    return Array.from(elements).filter(el => 
+                        el.textContent.includes(searchText)
+                    );
+                }
+                return querySelectorAll.call(this, selector);
+            };
+        })(document.querySelectorAll);
+
+        // Helper function untuk RX Power class
+        function getRxPowerClass(rxPower) {
+            if (!rxPower) return '';
+            const power = parseFloat(rxPower);
+            if (power > -25) return 'rx-power-good';
+            if (power > -27) return 'rx-power-warning';
+            return 'rx-power-critical';
+        }
+
+        // Update statistics
+        function updateStats() {
+            const devices = document.querySelectorAll('.device-card');
+            const online = document.querySelectorAll('.status-indicator.online').length;
+            const offline = document.querySelectorAll('.status-indicator.offline').length;
+            const critical = document.querySelectorAll('.rx-power-critical').length;
+
+            document.getElementById('totalDevices').textContent = devices.length;
+            document.getElementById('onlineDevices').textContent = online;
+            document.getElementById('offlineDevices').textContent = offline;
+            document.getElementById('criticalDevices').textContent = critical;
+        }
+
+        // Panggil updateStats saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', updateStats);
+
+        // Panggil updateStats setiap kali ada perubahan status device
+        function refreshStats() {
+            updateStats();
+        }
+
+        // Tambahkan pemanggilan refreshStats setelah setiap operasi yang mengubah status device
+        document.querySelectorAll('.refresh-device').forEach(button => {
+            button.addEventListener('click', () => {
+                setTimeout(refreshStats, 3000); // Refresh stats setelah refresh device
+            });
+        });
+
+        // Search and filter functionality
+        function filterDevices() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const rxPowerFilter = document.getElementById('rxPowerFilter').value;
+
+            document.querySelectorAll('.device-card').forEach(card => {
+                // Cari PPPoE username dengan lebih tepat
+                const deviceInfoElements = card.querySelectorAll('.device-info');
+                let pppoeText = '';
+                
+                // Cari elemen yang berisi "PPPoE:"
+                deviceInfoElements.forEach(el => {
+                    if (el.textContent.includes('PPPoE:')) {
+                        pppoeText = el.textContent.toLowerCase();
+                    }
+                });
+                
+                const customerNumber = card.querySelector('input[placeholder="Customer Number"]')?.value || '';
+                
+                let show = true;
+
+                // Search filter
+                if (searchTerm) {
+                    // Cek apakah searchTerm ada dalam PPPoE text atau customer number
+                    const matchPPPoE = pppoeText.includes(searchTerm);
+                    const matchCustomer = customerNumber.toLowerCase().includes(searchTerm);
+                    
+                    // Debug log
+                    console.log('Searching:', {
+                        searchTerm,
+                        pppoeText,
+                        customerNumber,
+                        matchPPPoE,
+                        matchCustomer
+                    });
+                    
+                    if (!matchPPPoE && !matchCustomer) {
+                        show = false;
+                    }
+                }
+
+                // Status dan RX Power filter tetap sama
+                if (statusFilter !== 'all') {
+                    const isOnline = card.querySelector('.status-indicator.online') !== null;
+                    if (statusFilter === 'online' && !isOnline) show = false;
+                    if (statusFilter === 'offline' && isOnline) show = false;
+                }
+
+                if (rxPowerFilter !== 'all') {
+                    const rxPowerEl = card.querySelector('.rx-power-good, .rx-power-warning, .rx-power-critical');
+                    const powerClass = rxPowerEl ? rxPowerEl.className : '';
+                    if (rxPowerFilter === 'good' && !powerClass.includes('good')) show = false;
+                    if (rxPowerFilter === 'warning' && !powerClass.includes('warning')) show = false;
+                    if (rxPowerFilter === 'critical' && !powerClass.includes('critical')) show = false;
+                }
+
+                card.style.display = show ? '' : 'none';
+            });
+        }
+
+        // Auto refresh every 30 seconds
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+
+        document.getElementById('refreshAllBtn').addEventListener('click', async function() {
+            try {
+                if (!confirm('Are you sure you want to refresh all devices?')) {
+                    return;
+                }
+
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Refreshing...';
+                
+                const response = await fetch('/admin/refresh-all', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    // Tunggu 5 detik sebelum reload untuk memberi waktu refresh selesai
+                    setTimeout(() => location.reload(), 5000);
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert('Failed to refresh devices: ' + error.message);
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Refresh All Devices';
+            }
+        });
+
+        document.querySelectorAll('.refresh-device').forEach(button => {
+            button.addEventListener('click', async function() {
+                const deviceId = this.dataset.deviceId;
+                
+                try {
+                    if (!confirm(`Are you sure you want to refresh device ${deviceId}?`)) {
+                        return;
+                    }
+
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    
+                    console.log('Original deviceId:', deviceId);
+                    
+                    // Send deviceId as-is, let server handle the encoding
+                    const response = await fetch(`/admin/refresh-device/${deviceId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Refresh response:', data);
+                    
+                    if (data.success) {
+                        alert('Device refreshed successfully');
+                        // Tunggu 3 detik sebelum reload
+                        setTimeout(() => location.reload(), 3000);
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    console.error('Refresh error:', error);
+                    alert('Failed to refresh device: ' + error.message);
+                } finally {
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                }
+            });
+        });
+
+        // Event listener untuk tombol reboot
+        document.querySelectorAll('.reboot-device').forEach(button => {
+            button.addEventListener('click', async function() {
+                const deviceId = this.dataset.deviceId;
+                const deviceName = this.closest('.card').querySelector('.card-title').textContent.trim();
+                
+                // Konfirmasi dari user
+                if (!confirm(`Apakah Anda yakin ingin melakukan reboot device ${deviceName}?`)) {
+                    return;
+                }
+                
+                const originalContent = this.innerHTML;
+                
+                try {
+                    // Disable button dan tampilkan loading state
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    
+                    const response = await fetch('/reboot-device', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ deviceId })
+                    });
+
+                    const result = await response.json();
+                    
+                    // Tampilkan alert
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = `alert alert-${result.success ? 'success' : 'danger'} alert-dismissible fade show`;
+                    alertDiv.innerHTML = `
+                        ${result.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
+                    
+                    // Jika berhasil, refresh device setelah 30 detik
+                    if (result.success) {
+                        setTimeout(() => {
+                            this.closest('.card').querySelector('.refresh-device').click();
+                        }, 30000);
+                    }
+                } catch (error) {
+                    console.error('Reboot error:', error);
+                    alert('Gagal melakukan reboot device');
+                } finally {
+                    // Kembalikan button ke kondisi awal
+                    this.disabled = false;
+                    this.innerHTML = originalContent;
+                }
+            });
+        });
+
+        // Toggle Password Visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const passwordInput = this.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Ganti icon
+                const icon = this.querySelector('i');
+                if (type === 'password') {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                } else {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            });
+        });
+
+        // Update SSID Form Handler
+        document.querySelectorAll('.update-ssid-form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const deviceId = this.dataset.deviceId;
+                const ssidInput = this.querySelector('input[name="ssid"]');
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.innerHTML;
+                
+                try {
+                    // Disable form elements
+                    ssidInput.disabled = true;
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
+                    
+                    const response = await fetch('/update-wifi', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            deviceId: deviceId,
+                            ssid2G: ssidInput.value,  // Gunakan nilai yang sama untuk kedua band
+                            ssid5G: ssidInput.value + '-5G'  // Tambahkan suffix -5G untuk band 5G
+                        })
+                    });
+
+                    const data = await response.json();
+                    showAlert(data.success ? 'success' : 'danger', data.message);
+                    
+                    if (data.success) {
+                        setTimeout(() => location.reload(), 2000);
+                    }
+                } catch (error) {
+                    console.error('Update SSID error:', error);
+                    showAlert('danger', 'Gagal mengupdate SSID');
+                } finally {
+                    ssidInput.disabled = false;
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                }
+            });
+        });
+
+        // Update Password Form Handler
+        document.querySelectorAll('.update-password-form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const deviceId = this.dataset.deviceId;
+                const passwordInput = this.querySelector('input[name="password"]');
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.innerHTML;
+                
+                try {
+                    if (passwordInput.value.length < 8) {
+                        showAlert('danger', 'Password harus minimal 8 karakter');
+                        return;
+                    }
+                    
+                    passwordInput.disabled = true;
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
+                    
+                    const response = await fetch('/update-wifi', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            deviceId: deviceId,
+                            password2G: passwordInput.value,  // Gunakan nilai yang sama untuk kedua band
+                            password5G: passwordInput.value
+                        })
+                    });
+
+                    const data = await response.json();
+                    showAlert(data.success ? 'success' : 'danger', data.message);
+                    
+                    if (data.success) {
+                        passwordInput.value = '';
+                        setTimeout(() => location.reload(), 2000);
+                    }
+                } catch (error) {
+                    console.error('Update password error:', error);
+                    showAlert('danger', 'Gagal mengupdate password');
+                } finally {
+                    passwordInput.disabled = false;
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                }
+            });
+        });
+
+        // Fungsi untuk update nomor pelanggan
+        async function updateCustomerNumber(button) {
+            // Cari input dalam parent row yang sama
+            const row = button.closest('.row');
+            const input = row.querySelector('input[type="text"]');
+            const originalButtonText = button.innerHTML;
+            
+            try {
+                // Validasi input
+                if (!input.value || !/^\d+$/.test(input.value)) {
+                    showAlert('danger', 'Nomor pelanggan harus berupa angka');
+                    return;
+                }
+                
+                // Disable input dan button
+                input.disabled = true;
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...';
+                
+                // Kirim request ke server
+                const response = await fetch('/update-customer-number', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        deviceId: input.dataset.deviceId,
+                        customerNumber: input.value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('success', 'Nomor pelanggan berhasil diperbarui');
+                } else {
+                    throw new Error(data.message || 'Gagal mengupdate nomor pelanggan');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('danger', 'Terjadi kesalahan: ' + error.message);
+            } finally {
+                // Re-enable input dan button
+                input.disabled = false;
+                button.disabled = false;
+                button.innerHTML = originalButtonText;
+            }
+        }
+        
+        // Fungsi untuk update nama pelanggan
+        async function updateCustomerName(button) {
+            // Cari input dalam parent row yang sama
+            const row = button.closest('.row');
+            const input = row.querySelector('input[type="text"]');
+            const originalButtonText = button.innerHTML;
+            
+            try {
+                // Validasi input
+                if (!input.value) {
+                    showAlert('danger', 'Nama pelanggan tidak boleh kosong');
+                    return;
+                }
+                
+                // Disable input dan button
+                input.disabled = true;
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...';
+                
+                // Kirim request ke server
+                const response = await fetch('/update-customer-name', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        deviceId: input.dataset.deviceId,
+                        customerName: input.value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('success', 'Nama pelanggan berhasil diperbarui');
+                } else {
+                    throw new Error(data.message || 'Gagal mengupdate nama pelanggan');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('danger', 'Terjadi kesalahan: ' + error.message);
+            } finally {
+                // Re-enable input dan button
+                input.disabled = false;
+                button.disabled = false;
+                button.innerHTML = originalButtonText;
+            }
+        }
+
+        // Helper function untuk menampilkan alert
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Pastikan event listener terpasang dengan benar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up event listeners');
+            
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const rxPowerFilter = document.getElementById('rxPowerFilter');
+
+            if (searchInput) {
+                console.log('Search input found, attaching event listener');
+                searchInput.addEventListener('input', function() {
+                    console.log('Search input changed:', this.value);
+                    filterDevices();
+                });
+            } else {
+                console.error('Search input not found!');
+            }
+            
+            if (statusFilter) {
+                statusFilter.addEventListener('change', filterDevices);
+            }
+            
+            if (rxPowerFilter) {
+                rxPowerFilter.addEventListener('change', filterDevices);
+            }
+            
+            // Panggil filterDevices sekali untuk inisialisasi
+            filterDevices();
+        });
+
+        // Inisialisasi toggle password untuk semua input password
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const passwordInput = this.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Ganti icon
+                const icon = this.querySelector('i');
+                if (type === 'password') {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                } else {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

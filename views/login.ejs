@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6B73FF;
+            --secondary-color: #000DFF;
+            --accent-color: #4158D0;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4a90e2 0%, #2c3e50 100%);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #f5f7fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-container {
+    background: rgba(255,255,255,0.97);
+    border-radius: 22px;
+    box-shadow: 0 6px 32px 0 rgba(44, 62, 80, 0.16);
+    padding: 40px 32px 32px 32px;
+    max-width: 400px;
+    width: 94%;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 1.5px solid #e5e9f2;
+    position: relative;
+    overflow: hidden;
+}
+.login-container:hover {
+    box-shadow: 0 12px 48px 0 rgba(44, 62, 80, 0.23);
+    transform: translateY(-3px) scale(1.012);
+}
+
+        .login-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 
+                0 30px 70px rgba(0, 0, 0, 0.25),
+                0 0 30px rgba(107, 115, 255, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 8s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.08),
+                0 0 5px rgba(107, 115, 255, 0.1);
+        }
+
+        .input-group:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 20px rgba(107, 115, 255, 0.15),
+                0 0 10px rgba(107, 115, 255, 0.2);
+        }
+
+        .input-group-text {
+            background: transparent;
+            border: none;
+            color: var(--primary-color);
+            padding: 12px 15px;
+        }
+
+        .form-control {
+            border: none;
+            padding: 12px 15px;
+            background: transparent;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.15),
+                0 0 10px rgba(107, 115, 255, 0.2);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 25px rgba(107, 115, 255, 0.3),
+        }
+
+        .alert {
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(220, 53, 69, 0.1);
+            border: none;
+            color: #dc3545;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 
+                0 5px 15px rgba(220, 53, 69, 0.1),
+                0 0 5px rgba(220, 53, 69, 0.1);
+        }
+        
+        .loading-indicator {
+            display: none;
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert-info {
+            background: rgba(65, 88, 208, 0.1);
+            color: var(--primary-color);
+            box-shadow: 
+                0 5px 15px rgba(65, 88, 208, 0.1),
+                0 0 5px rgba(65, 88, 208, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .login-header h2 {
+                font-size: 1.75rem;
+            }
+        }
+
+        .login-logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 480px) {
+            .login-logo {
+                width: 150px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="/icons/logo.png" alt="ALIJAYA-NET" class="login-logo">
+            <p>Masukkan nomor pelanggan Anda</p>
+        </div>
+
+        <% if (error) { %>
+            <div class="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <%= error %>
+            </div>
+        <% } %>
+
+        <div id="loading-alert" class="alert alert-info" style="display: none;">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            Mohon tunggu, sedang memproses...
+        </div>
+
+        <form id="login-form" action="/login" method="POST" onsubmit="showLoading()">
+            <div class="input-container">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    <input type="text" 
+                           class="form-control" 
+                           id="username" 
+                           name="username" 
+                           placeholder="Masukkan nomor pelanggan"
+                           pattern="[0-9]+"
+                           required>
+                </div>
+            </div>
+
+            <small class="text-muted d-block text-center mb-3">
+                Apabila belum terdaftar silahkan menghubungi Admin
+            </small>
+
+            <button type="submit" id="login-button" class="btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i><span id="login-text">Masuk</span>
+                <i class="fas fa-circle-notch fa-spin loading-indicator" id="loading-spinner"></i>
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showLoading() {
+            // Tampilkan pesan loading
+            document.getElementById('loading-alert').style.display = 'flex';
+            
+            // Ubah teks tombol dan tampilkan spinner
+            document.getElementById('login-text').innerText = 'Memproses...';
+            document.getElementById('loading-spinner').style.display = 'inline-block';
+            
+            // Nonaktifkan tombol untuk mencegah klik berulang
+            document.getElementById('login-button').disabled = true;
+            
+            // Kembalikan true agar form tetap di-submit
+            return true;
+        }
+        
+        // Jika halaman di-refresh, pastikan tombol login kembali aktif
+        window.onload = function() {
+            document.getElementById('login-button').disabled = false;
+            document.getElementById('login-text').innerText = 'Masuk';
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('loading-alert').style.display = 'none';
+        };
+    </script>
+</body>
+</html>

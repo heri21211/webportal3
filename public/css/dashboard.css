@@ -1,0 +1,427 @@
+/* Variabel warna dan tema */
+:root {
+    --primary-color: #6B73FF;
+    --secondary-color: #000DFF;
+    --accent-color: #4158D0;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --warning-color: #f1c40f;
+    --dark-color: #2c3e50;
+    --light-color: #f8f9fa;
+    --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset dan base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: 
+        linear-gradient(45deg, rgba(107,115,255,0.1) 0%, rgba(0,13,255,0.1) 100%),
+        radial-gradient(circle at top right, rgba(65,88,208,0.15) 0%, transparent 50%),
+        radial-gradient(circle at bottom left, rgba(200,80,192,0.15) 0%, transparent 50%);
+    min-height: 100vh;
+    padding-top: 80px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar Styles */
+.dynamic-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.navbar.hidden {
+    transform: translateY(-100%);
+}
+
+.navbar-brand img {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.05);
+}
+
+.logout-btn {
+    padding: 8px 20px;
+    border-radius: 12px;
+    color: var(--primary-color);
+    text-decoration: none;
+    background: rgba(107, 115, 255, 0.1);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.logout-btn:hover {
+    background: var(--gradient);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Card Styles */
+.card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(107, 115, 255, 0.15);
+}
+
+/* Status Card */
+.status-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.status-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(107,115,255,0.1) 0%, transparent 50%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.status-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2.5rem;
+    color: white;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styles */
+.btn-glassy {
+    padding: 12px 24px;
+    border-radius: 16px;
+    border: none;
+    background: var(--gradient);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-glassy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.btn-glassy:hover::before {
+    left: 100%;
+}
+
+.refresh-btn {
+    background: linear-gradient(135deg, #6B73FF, #000DFF);
+}
+
+.reboot-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5253);
+}
+
+/* Network Stats Card */
+.stat-item {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(107, 115, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(107, 115, 255, 0.05),
+        transparent
+    );
+    transform: translateX(-100%);
+    transition: 0.5s;
+}
+
+.stat-item:hover::after {
+    transform: translateX(100%);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.4rem;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover .stat-icon {
+    transform: rotate(15deg) scale(1.1);
+}
+
+/* WiFi Settings Card */
+.wifi-settings-card .form-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shadow-box {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(107, 115, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.shadow-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(107, 115, 255, 0.15);
+}
+
+/* Input fields */
+.form-control {
+    border-radius: 12px;
+    border: 2px solid rgba(107, 115, 255, 0.1);
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(107, 115, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Table styling */
+.table {
+    border-radius: 16px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table thead th {
+    background: var(--gradient);
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.table tbody tr:hover {
+    background: rgba(107, 115, 255, 0.05);
+    transform: scale(1.01);
+}
+
+/* Animations */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Loading spinners */
+.spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 0.2em;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    body {
+        padding-top: 60px;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .stat-item {
+        padding: 20px;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    .table thead th {
+        font-size: 0.8rem;
+        padding: 12px;
+    }
+
+    .btn-glassy {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Speed Test Card Styles */
+.speedtest-card {
+    background: var(--card-bg);
+}
+
+.speedometer-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+}
+
+.speed-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.speed-details {
+    padding: 20px 0;
+}
+
+.speed-info {
+    padding: 15px;
+    border-radius: 16px;
+    background: rgba(107, 115, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.speed-info:hover {
+    transform: translateY(-3px);
+    background: rgba(107, 115, 255, 0.15);
+}
+
+.speed-info i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.speed-info h6 {
+    margin: 10px 0;
+    color: var(--dark-color);
+}
+
+.speed-info span {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.download i {
+    color: var(--success-color);
+}
+
+.upload i {
+    color: var(--primary-color);
+}
+
+#start-test {
+    background: var(--gradient);
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+#start-test:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(107, 115, 255, 0.2);
+}
+
+#start-test:disabled {
+    background: #ccc;
+    transform: none;
+    cursor: not-allowed;
+} 
